@@ -119,4 +119,43 @@ def create_news(request):
 
     return redirect('/')
 
+
+def update_news(request, id):
+    news = get_object_or_404(News, id=id)
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            news.name = request.POST.get('name')
+            news.description = request.POST.get('description')
+            news.content = request.POST.get('content')
+            news.category = Category.objects.get(id=int(request.POST.get('category')))
+            news.is_published = request.POST.get('is_published') == 'on'
+
+            image = request.FILES.get('image')
+            tags = Tag.objects.filter(id__in=list(map(int, request.POST.getlist('tags'))))
+
+            for tag in news.tags.all():
+                news.tags.remove(tag)
+
+            for tag in tags:
+                news.tags.add(tag)
+
+            if image:
+                newsImageSystem = FileSystemStorage('media/news_images/')
+                newsImageSystem.delete(news.image)
+                newsImageSystem.save(image.name, image)
+                news.image = image
+
+            news.save()
+            return redirect(f'/workspace/news/{news.id}/')
+
+        tags = Tag.objects.all()
+        categories = Category.objects.all()
+        return render(request, 'workspace/update_news.html', {
+            'news': news,
+            'tags': tags,
+            'categories': categories
+        })
+
+    return redirect('/')
+
 # Create your views here.

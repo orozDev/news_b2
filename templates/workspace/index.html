@@ -26,8 +26,9 @@
                                 <span>{{ tag.name }}</span> /
                             {% endfor %}
                         </p>
-                        <a href="{% url 'workspace_detail_news' id=news.id %}" class="btn btn-primary">Go
-                            somewhere</a>
+                        <a href="{% url 'workspace_detail_news' id=news.id %}" class="btn btn-primary">View</a>
+                        <a href="{% url 'workspace_update_news' id=news.id %}" class="btn btn-warning">Edit</a>
+                        <a href="{% url 'workspace_update_news' id=news.id %}" class="btn btn-danger">Delete</a>
                     </div>
                 </div>
             </div>
