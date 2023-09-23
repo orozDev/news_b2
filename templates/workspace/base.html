@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9 col-md-8 col-12 mb-4">
+                {% block work_content %}{% endblock work_content %}
+            </div>
+            <div class="col-lg-3 col-md-4 col-12">
+                 {% include 'components/workspace/sidebar.html' %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}
+    | {{ news.name }}
+{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="text-center mb-4">{{ news.name|capital:"oroz" }}</h1>
+        <div class="mb-4">
+            <img src="{{ news.image.url }}" class="w-100" alt="">
+        </div>
+        <div class="text-end">
+            {{ news.category.name }}
+        </div>
+        <div class="mb-4">
+            <p>{{ news.description }}</p>
+            {#            <p>{{ news.content|mark_safe }}</p>#}
+            <p>{{ news.content|safe }}</p>
+        </div>
+        <div class="text-end mb-5">
+            {{ news.date|date:"l, t E Y" }}
+        </div>
+        <div class="card">
+            <div class="card-header">
+                Comments
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <form name="createComment">
+                        {% csrf_token %}
+                        <div class="mb-2">
+                            <lable for="name_comment">Full Name <span class="text-danger">*</span></lable>
+                            <input type="text" id="name_comment" class="form-control" name="name" required>
+                        </div>
+                        <div class="mb-2">
+                            <lable for="text_comment">Comment <span class="text-danger">*</span></lable>
+                            <textarea id="text_comment" name="text" class="form-control" rows="6" required></textarea>
+                        </div>
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary" id="addCommentBtn">Add this comment</button>
+                        </div>
+                    </form>
+                </div>
+                <div id="commentContainer">
+                    {% for comment in comments %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ comment.name }}</h5>
+                                <p class="card-text">{{ comment.text }}</p>
+                                 <h6 class="card-subtitle mb-2 text-muted text-end">{{ comment.date }}</h6>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ news.id|json_script:"news_id" }}
+{% endblock content %}

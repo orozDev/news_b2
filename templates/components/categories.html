@@ -1,0 +1,9 @@
+{% load custom_tags %}
+
+{% get_all_categories as categories %}
+
+{% for category in categories %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'news_by_category' id=category.id %}">{{ category.name }}</a>
+    </li>
+{% endfor %}

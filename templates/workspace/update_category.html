@@ -1,0 +1,24 @@
+{% extends 'workspace/base.html' %}
+
+{% block title %}| Update the category "{{ category.name }}"{% endblock title %}
+
+{% block work_content %}
+    <h3 class="mb-4">Update the category "{{ category.name }}":</h3>
+    <div>
+        <form action="{% url 'workspace_update_category' id=category.id %}" method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <lable for="name_input">Name <span class="text-danger">*</span></lable>
+                <input type="text" name="name" id="name_input" value="{{ category.name }}" class="form-control">
+            </div>
+            <div>
+                <button type="submit" class="btn btn-primary d-block w-100">Save</button>
+            </div>
+            {% if message %}
+                <div class="mt-4 text-danger text-center">
+                    <i class="fa-solid fa-circle-exclamation"></i> {{ message }}
+                </div>
+            {% endif %}
+        </form>
+    </div>
+{% endblock work_content %}

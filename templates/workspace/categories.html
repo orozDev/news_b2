@@ -1,0 +1,37 @@
+{% extends 'workspace/base.html' %}
+
+{% block title %}| Categories{% endblock title %}
+
+{% block work_content %}
+    <div class="d-flex justify-content-between">
+        <h3 class="mb-4">Categories:</h3>
+        <div>
+             <a href="{% url 'workspace_create_category' %}" class="btn btn-success">
+                 Add
+                 <i class="fa-solid fa-pen-to-square"></i>
+             </a>
+        </div>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <td><b>Name</b></td>
+            <td align="end"><b>Actions</b></td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for category in categories %}
+            <tr>
+                <td>{{ category.name }}</td>
+                <td>
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a href="{% url 'workspace_update_category' id=category.id %}" class="btn btn-warning"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <a href="{% url 'workspace_delete_category' id=category.id %}" class="btn btn-danger"><i class="fa-solid fa-trash"></i></a>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock work_content %}

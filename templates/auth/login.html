@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}| Login{% endblock title %}
+
+{% block content %}
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 80vh">
+        <div class="card" style="min-width: 400px">
+            <div class="card-body">
+                <form action="{% url 'login' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <input type="text" name="username" class="form-control" placeholder="Enter username" >
+                    </div>
+                    <div class="mb-4">
+                        <input type="password" name="password" class="form-control" placeholder="Enter paswword" >
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-primary d-block w-100">Login</button>
+                    </div>
+                    {% if message %}
+                        <div class="mt-4 text-danger text-center">
+                            <i class="fa-solid fa-circle-exclamation"></i> {{ message }}
+                        </div>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

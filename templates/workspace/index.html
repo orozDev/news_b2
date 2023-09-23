@@ -1,0 +1,41 @@
+{% extends 'workspace/base.html' %}
+
+{% block title %}| Workspace{% endblock title %}
+
+{% block work_content %}
+    <h1 class="mb-4">Welcome to WorkSpace</h1>
+    <div class="d-flex justify-content-between">
+        <h4>Your news:</h4>
+        <div>
+            <a href="{% url 'workspace_create_news' %}" class="btn btn-success">
+                Add news <i class="fa-solid fa-pen-to-square"></i>
+            </a>
+        </div>
+    </div>
+    <div class="row py-3">
+        {% for news in news_list %}
+            <div class="col-12 col-md-6 col-lg-4 mb-3">
+                <div class="card">
+                    <img src='{{ news.image.url }}' class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ news.id }}. {{ news.name }}</h5>
+                        <p>{{ news.category.name }}</p>
+                        <p class="card-text">{{ news.description }}</p>
+                        <p>
+                            {% for tag in news.tags.all %}
+                                <span>{{ tag.name }}</span> /
+                            {% endfor %}
+                        </p>
+                        <a href="{% url 'workspace_detail_news' id=news.id %}" class="btn btn-primary">Go
+                            somewhere</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center">
+                <h3>No News</h3>
+            </div>
+        {% endfor %}
+        {% include 'components/news_pagination.html' %}
+    </div>
+{% endblock work_content %}

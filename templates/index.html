@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="row py-4 mb-5">
+            {% for news in news_list %}
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+                    <div class="card">
+                        <img src='{{ news.image.url }}' class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ news.id }}. {{ news.name }}</h5>
+                            <p>{{ news.category.name }}</p>
+                            <p class="card-text">{{ news.description }}</p>
+                            <p>
+                                {% for tag in news.tags.all %}
+                                    <a href="?tag={{ tag.id }}">{{ tag.name }}</a> /
+                                {% endfor %}
+                            </p>
+                            <a href="{% url 'detail_news' id=news.id %}" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12 text-center">
+                    <h3>No News</h3>
+                </div>
+            {% endfor %}
+        </div>
+       {% include 'components/news_pagination.html' %}
+    </div>
+
+{% endblock content %}
