@@ -1,0 +1,75 @@
+{% extends 'workspace/base.html' %}
+
+{% block title %}| Tags{% endblock title %}
+
+{% block work_content %}
+
+    <div class="d-flex justify-content-between">
+        <h3 class="mb-4">Tags:</h3>
+        <div>
+            <a href="{% url 'workspace_create_tag' %}" class="btn btn-success">
+                Add
+                <i class="fa-solid fa-pen-to-square"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="">
+        <div>
+            <div><b>Name</b></div>
+            <div align="end"><b>Actions</b></div>
+        </div>
+        <div>
+            {% for tag in tags %}
+            <div class="d-flex justify-content-between bb mb-4 pb-2">
+                <div>{{ tag.name }}</div>
+                <div>
+                    <div class="flex gap-2 justify-end">
+                        <a href="{% url 'workspace_update_tag' id=tag.id %}" class="btn btn-warning">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+                        <a href="{% url 'workspace_delete_tag' id=tag.id %}" class="btn btn-danger">
+                            <i class="fa-solid fa-trash"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="">
+        {% if tags.has_previous or tags.has_next %}
+            <div class="pagination d-flex gap-2 pt-10 justify-content-center">
+                {% if tags.has_previous %}
+                <div class="page-item">
+                    <a class="page-link" href="?offset={{ tags.previous_page_number }}">
+                        <i class="fa-solid fa-angle-left"></i>
+                    </a>
+                </div>
+                {% endif %}
+    
+                {% for i in tags.paginator.page_range %}
+                    {% if tags.number == i %}
+                    <div class="page-item active">
+                        <span class="page-link">{{ i }}</span>
+                    </div>
+                    {% else %}
+                        <div class="page-item">
+                            <a class="page-link" href="?offset={{ i }}">{{ i }}</a>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+    
+                {% if tags.has_next %}
+                    <div class="page-item">
+                        <a class="page-link" href="?offset={{ tags.next_page_number }}">
+                            <i class="fa-solid fa-angle-right"></i>
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+        </div>
+    </div>
+
+
+{% endblock work_content %}

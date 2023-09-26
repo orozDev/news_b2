@@ -21,7 +21,7 @@ def list_of_categories(request):
     if request.user.is_authenticated:
         categories = Category.objects.all().order_by('-id')
         offset = request.GET.get('offset', 1)
-        limit = request.GET.get('limit', 30)
+        limit = request.GET.get('limit', 2)
         paginator = Paginator(categories, limit)
         categories = paginator.get_page(offset)
         return render(request, 'workspace/categories.html', {'categories': categories})
@@ -32,7 +32,11 @@ def detail_news(request, id):
     if request.user.is_authenticated:
         news = get_object_or_404(News, id=id, author=request.user)
         comments = Comment.objects.filter(news=news)
-        return render(request, 'detail_news.html', {'news': news, 'comments': comments})
+        offset = request.GET.get('offset', 1)
+        limit = request.GET.get('limit', 2)
+        paginator = Paginator(comments, limit)
+        comments = paginator.get_page(offset)
+        return render(request, 'workspace/detail_news.html', {'news': news, 'comments': comments})
     return redirect('/')
 
 
@@ -158,4 +162,69 @@ def update_news(request, id):
 
     return redirect('/')
 
-# Create your views here.
+def list_of_tags(request):
+    if request.user.is_authenticated:
+        tags = Tag.objects.all().order_by('-id')
+        offset = request.GET.get('offset', 1)
+        limit = request.GET.get('limit', 2)
+        paginator = Paginator(tags, limit)
+        tags = paginator.get_page(offset)
+        return render(request, 'workspace/tags.html', {'tags': tags})
+    return redirect('/')
+
+
+def create_tag(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            name = request.POST.get('name', None)
+            if name is None or name == '':
+                return render(request, 'workspace/create_tag.html', {'message': 'Name is required'})
+            tag = Tag.objects.create(name=name)
+            return redirect('/workspace/tags/')
+
+        return render(request, 'workspace/create_tag.html')
+    return redirect('/')
+
+
+def update_tag(request, id):
+    if request.user.is_authenticated:
+        tag = get_object_or_404(Tag, id=id)
+        if request.method == 'POST':
+            name = request.POST.get('name', None)
+            if name is None or name == '':
+                return render(request, 'workspace/update_tag.html', {
+                    'message': 'Name is required',
+                    'tag': tag,
+                })
+
+            tag.name = name
+            tag.save()
+            return redirect('/workspace/tags/')
+
+        return render(request, 'workspace/update_tag.html', {'tag': tag})
+    return redirect('/')
+
+
+def delete_tag(request, id):
+    if request.user.is_authenticated:
+        tag = get_object_or_404(Tag, id=id)
+        tag.delete()
+        return redirect('/workspace/tags/')
+    return redirect('/')
+
+
+def delete_news(request, id):
+    if request.user.is_authenticated:
+        news = get_object_or_404(News, id=id)
+        news.delete()
+        return redirect('/workspace/')
+    return redirect('/')
+
+
+def delete_comment(request, id):
+    if request.user.is_authenticated:
+        comment = get_object_or_404(Comment, id=id)
+        comment.delete()
+        return redirect('/workspace/news/<int:id>/')
+    return redirect('/')
+
