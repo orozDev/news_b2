@@ -166,7 +166,7 @@ def list_of_tags(request):
     if request.user.is_authenticated:
         tags = Tag.objects.all().order_by('-id')
         offset = request.GET.get('offset', 1)
-        limit = request.GET.get('limit', 2)
+        limit = request.GET.get('limit', 20)
         paginator = Paginator(tags, limit)
         tags = paginator.get_page(offset)
         return render(request, 'workspace/tags.html', {'tags': tags})
@@ -224,7 +224,8 @@ def delete_news(request, id):
 def delete_comment(request, id):
     if request.user.is_authenticated:
         comment = get_object_or_404(Comment, id=id)
+        news_id = comment.news.id
         comment.delete()
-        return redirect('/workspace/news/<int:id>/')
+        return redirect(f'/workspace/news/{news_id}/')
     return redirect('/')
 

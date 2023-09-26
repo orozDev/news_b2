@@ -1,8 +1,8 @@
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
 
 from core.models import News, Category, Comment
 
@@ -87,5 +87,61 @@ def profile(request):
     if request.user.is_authenticated:
         return render(request, 'auth/profile.html')
     return redirect('/')
+
+
+def change_profile(request):
+    if request.user.is_authenticated:
+
+        if request.method == 'POST':
+            username = request.POST.get('username')
+            email = request.POST.get('email')
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+
+            userChecking = User.objects.filter(username=username)
+
+            if userChecking.exists() and request.user.username != username:
+                return render(request, 'auth/change_profile.html', {
+                    'message': f'User with this username {username} is already exists'})
+
+            user = request.user
+            user.username = username
+            user.email = email
+            user.first_name = first_name
+            user.last_name = last_name
+
+            user.save()
+            return redirect('/profile/')
+
+        return render(request, 'auth/change_profile.html')
+    return redirect('/')
+
+
+def change_password(request):
+    if request.user.is_authenticated:
+
+        if request.method == 'POST':
+            password = request.POST.get('password')
+            new_password = request.POST.get('new_password')
+            confirm_password = request.POST.get('confirm_password')
+
+            user = request.user
+
+            if not user.check_password(password):
+                return render(request, 'auth/change_password.html', {'message': 'Please enter valid password'})
+            if new_password != confirm_password:
+                return render(request, 'auth/change_password.html', {'message': 'The passwords don\'t match'})
+            if len(new_password) < 8:
+                return render(request, 'auth/change_password.html', {
+                    'message': 'You password must contain more than 8 charchers'})
+
+            user.set_password(new_password)
+            user.save()
+            login(request, user)
+            return redirect('/profile/')
+
+        return render(request, 'auth/change_password.html')
+    return redirect('/')
+
 
 # Create your views here.
