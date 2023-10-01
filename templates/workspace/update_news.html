@@ -29,7 +29,7 @@
                 <select name="category" id="category_input" class="form-select">
                     <option>Select category</option>
                     {% for category in categories %}
-                            <option value="{{ category.id }}" {% if category.id == news.category.id %}selected{% endif %}>{{ category.name }}</option>
+                        <option value="{{ category.id }}" {% if category.id == news.category.id %}selected{% endif %}>{{ category.name }}</option>
                     {% endfor %}
                 </select>
             </div>

@@ -14,22 +14,22 @@
                         <div class="mb-3">
                             <label for="username_input">Username <span class="text-danger">*</span></label>
                             <input type="text" name="username" class="form-control" value="{{ request.user.username }}"
-                                   id="username_input" required>
+                                id="username_input" required>
                         </div>
                         <div class="mb-3">
                             <label for="email_input">Email <span class="text-danger">*</span></label>
                             <input type="email" name="email" class="form-control" value="{{ request.user.email }}"
-                                   id="email_input" required>
+                                id="email_input" required>
                         </div>
                         <div class="mb-3">
                             <label for="first_name_input">First name <span class="text-danger">*</span></label>
                             <input type="text" name="first_name" class="form-control"
-                                   value="{{ request.user.first_name }}" id="first_name_input" required>
+                                value="{{ request.user.first_name }}" id="first_name_input" required>
                         </div>
                         <div class="mb-3">
                             <label for="last_name_input">Last name <span class="text-danger">*</span></label>
                             <input type="text" name="last_name" class="form-control"
-                                   value="{{ request.user.last_name }}" id="last_name_input" required>
+                                value="{{ request.user.last_name }}" id="last_name_input" required>
                         </div>
                         <div>
                             <button class="btn btn-success d-block w-100" type="submit">Save</button>

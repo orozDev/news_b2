@@ -50,9 +50,10 @@ def create_comment_ajax(request):
 
     new_comment = Comment.objects.create(
         news=news,
-        name=text,
+        name=name,
         text=text,
     )
+    
     return JsonResponse({
         'news': new_comment.news.id,
         'name': new_comment.name,
@@ -99,7 +100,7 @@ def change_profile(request):
             last_name = request.POST.get('last_name')
 
             userChecking = User.objects.filter(username=username)
-
+            
             if userChecking.exists() and request.user.username != username:
                 return render(request, 'auth/change_profile.html', {
                     'message': f'User with this username {username} is already exists'})
@@ -142,6 +143,3 @@ def change_password(request):
 
         return render(request, 'auth/change_password.html')
     return redirect('/')
-
-
-# Create your views here.

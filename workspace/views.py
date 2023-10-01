@@ -9,19 +9,48 @@ from core.models import News, Category, Tag, Comment
 def workspace(request):
     if request.user.is_authenticated:
         news = News.objects.filter(author=request.user).order_by('-id')
+        search = request.GET.get('search1', None)
+        message = None
+        if search:
+            news = News.objects.filter(name__icontains=search).order_by('name')
+            message = f'found news by title {search}'
         offset = request.GET.get('offset', 1)
         limit = request.GET.get('limit', 6)
         paginator = Paginator(news, limit)
         news = paginator.get_page(offset)
-        return render(request, 'workspace/index.html', {'news_list': news})
+        categories = Category.objects.all().order_by('name')
+        tags = Tag.objects.all().order_by('name')
+        return render(request, 'workspace/index.html', {'news_list': news, 'categories': categories, 'tags': tags, 'message': message,})
     return redirect('/')
+
+
+def filter_news_by_cat(request, id):
+    category = get_object_or_404(Category, id=id)
+    categories = Category.objects.all().order_by('name')
+    tags = Tag.objects.all().order_by('name')
+    if category:
+        news = News.objects.filter(category=category).order_by('-id')
+        return render(request, 'workspace/index.html', {'news_list': news, 'categories': categories, 'tags': tags})
+    return redirect('/')
+
+
+def filter_news_by_tag(request, id):
+    tag = get_object_or_404(Tag, id=id)
+    categories = Category.objects.all().order_by('name')
+    tags = Tag.objects.all().order_by('name')
+    if tag:
+        news = News.objects.filter(tags__id=tag.id).order_by('-id')
+        return render(request, 'workspace/index.html', {'news_list': news, 'categories': categories, 'tags': tags})
+    return redirect('/')
+    
+    
 
 
 def list_of_categories(request):
     if request.user.is_authenticated:
         categories = Category.objects.all().order_by('-id')
         offset = request.GET.get('offset', 1)
-        limit = request.GET.get('limit', 2)
+        limit = request.GET.get('limit', 5)
         paginator = Paginator(categories, limit)
         categories = paginator.get_page(offset)
         return render(request, 'workspace/categories.html', {'categories': categories})
@@ -33,7 +62,7 @@ def detail_news(request, id):
         news = get_object_or_404(News, id=id, author=request.user)
         comments = Comment.objects.filter(news=news)
         offset = request.GET.get('offset', 1)
-        limit = request.GET.get('limit', 2)
+        limit = request.GET.get('limit', 10)
         paginator = Paginator(comments, limit)
         comments = paginator.get_page(offset)
         return render(request, 'workspace/detail_news.html', {'news': news, 'comments': comments})
@@ -145,7 +174,7 @@ def update_news(request, id):
 
             if image:
                 newsImageSystem = FileSystemStorage('media/news_images/')
-                newsImageSystem.delete(news.image)
+                newsImageSystem.delete(news.image.name)
                 newsImageSystem.save(image.name, image)
                 news.image = image
 
@@ -221,7 +250,7 @@ def delete_news(request, id):
     return redirect('/')
 
 
-def delete_comment(request, id):
+def delete_comment_ajax(request, id):
     if request.user.is_authenticated:
         comment = get_object_or_404(Comment, id=id)
         news_id = comment.news.id

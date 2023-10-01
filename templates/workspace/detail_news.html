@@ -2,7 +2,7 @@
 {% load custom_filters %}
 
 {% block title %}
-    | {{ news.name }}
+    |{{ news.name }}
 {% endblock title %}
 
 {% block content %}
@@ -43,17 +43,22 @@
                         </div>
                     </form>
                 </div>
-                <div id="commentContainer">
-                    {% for comment in comments %}
-                        <div class="card mb-3">
+                <div >
+                    <div id="commentContainer">
+                        {% for comment in comments %}
+                        {{ comment.id|json_script:"comment_id" }}
+                        <div  class="card mb-3">
                             <div class="card-body">
-                                <h5 class="card-title">{{ comment.name }}</h5>
-                                <p class="card-text">{{ comment.text }}</p>
-                                 <h6 class="card-subtitle mb-2 text-muted text-end">{{ comment.date }}</h6>
-                                 <a align='end' href="{% url 'workspace_delete_comment' id=comment.id %}" class="btn btn-danger ">Delete</a>
+                                <form action="">
+                                    <h5 class="card-title">{{ comment.name }}</h5>
+                                    <p class="card-text">{{ comment.text }}</p>
+                                    <h6 class="card-subtitle mb-2 text-muted text-end">{{ comment.date }}</h6>
+                                    <button formaction="{% url 'workspace_delete_comment_ajax' id=comment.id%}" align='end' class="btn btn-danger">Delete</button>   
+                                </form>
                             </div>
                         </div>
                     {% endfor %}
+                    </div>
                     {% if comments.has_previous or comments.has_next %}
                         <div class="pagination d-flex gap-2 pt-10 justify-content-center">
                             {% if comments.has_previous %}
