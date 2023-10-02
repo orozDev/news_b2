@@ -55,6 +55,7 @@ def create_comment_ajax(request):
     )
     
     return JsonResponse({
+        'id': new_comment.id,
         'news': new_comment.news.id,
         'name': new_comment.name,
         'text': new_comment.text,

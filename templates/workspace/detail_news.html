@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load custom_filters %}
+{% load static %}
 
 {% block title %}
     |{{ news.name }}
@@ -46,15 +47,12 @@
                 <div >
                     <div id="commentContainer">
                         {% for comment in comments %}
-                        {{ comment.id|json_script:"comment_id" }}
-                        <div  class="card mb-3">
+                        <div class="card mb-3" id="comment_block_{{ comment.id }}">
                             <div class="card-body">
-                                <form action="">
-                                    <h5 class="card-title">{{ comment.name }}</h5>
-                                    <p class="card-text">{{ comment.text }}</p>
-                                    <h6 class="card-subtitle mb-2 text-muted text-end">{{ comment.date }}</h6>
-                                    <button formaction="{% url 'workspace_delete_comment_ajax' id=comment.id%}" align='end' class="btn btn-danger">Delete</button>   
-                                </form>
+                                <h5 class="card-title">{{ comment.name }}</h5>
+                                <p class="card-text">{{ comment.text }}</p>
+                                <h6 class="card-subtitle mb-2 text-muted text-end">{{ comment.date }}</h6>
+                                <button onclick="deleteComment({{ comment.id }})" class="btn btn-danger">Delete</button>   
                             </div>
                         </div>
                     {% endfor %}

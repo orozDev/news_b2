@@ -25,46 +25,33 @@ document.forms.createComment.addEventListener('submit', e => {
     })
     .then(res => {
         const commentContainer = document.querySelector('#commentContainer')
-        commentContainer.innerHTML += `
-        <div data="${res.name}" class="card mb-3">
-            <div class="card-body">
-                <h5 class="card-title">${res.name}</h5>
-                <p class="card-text">${res.text}</p>
-                <h6 class="card-subtitle mb-2 text-muted text-end">${res.date}</h6>
-                <button formaction="{% url 'workspace_delete_comment_ajax' id=comment.id%}" align='end' class="btn btn-danger">Delete</button>
+        commentContainer.innerHTML = `
+            <div class="card mb-3" id="comment_block_${res.id}">
+                <div class="card-body">
+                    <h5 class="card-title">${res.name}</h5>
+                    <p class="card-text">${res.text}</p>
+                    <h6 class="card-subtitle mb-2 text-muted text-end">${res.date}</h6>
+                    <button class="btn btn-danger" onclick="deleteComment(${res.id})">Delete</button>
+                </div>
             </div>
-        </div>
-    `
+        ` + commentContainer.innerHTML
     })
     .finally(res => btn.innerHTML = 'Add this comment')
 })
 
 
-const commentContainer = document.querySelector('#commentContainer')
-function getChildren(list) {
-    for (item of list){
-        item.getAttribute('data')
-        item.children[0].children[3].addEventListener('click', e => {
-            e.preventDefault()
-            if (e.target.closest('.card')){
-                e.target.closest('.card').remove()
-            } 
-            // fetch(
-            //     '/workspace/ajax/delete_comment/',
-            //     {
-            //         method: 'GET',
-            //         headers:{
-            //             'Accept': 'application/json'
-            //         },
-            //         // body
-            //     }
-            // ).then(response => response.json())
-            // .then(response => {
-            //     console.log(response);
-            // })
-        })
-    } 
-}
+const deleteComment = async (commentId) => {
 
-getChildren(commentContainer.children)
-    
+    const res = await fetch(`/workspace/ajax/comments/${commentId}/delete/`)
+    if (res.status === 200) {
+        const data = await res.json()
+        if (data.isDeleted) {
+            const commentBlock = document.querySelector(`#comment_block_${commentId}`)
+            commentBlock.remove()
+        }
+    } else {
+        alert('Network error or unauthorized')
+    }
+
+
+}  
